@@ -55,7 +55,7 @@ def callback():
 def handle_message(event):
     q = poker_chart.main()
     print ("--------------")
-    print (q)
+    print (type(q))
 
     line_bot_api.reply_message(
         event.reply_token,
