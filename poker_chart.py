@@ -71,6 +71,7 @@ def main():
     print ('class_name: {}'.format(hand_class))
     print ('q: {}'.format(q))
     print ('a: {}'.format(a))
+    return q
 
 if __name__ == '__main__':
     main()
