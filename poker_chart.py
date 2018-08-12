@@ -65,13 +65,13 @@ def main():
     hand_class = classing(hand_list)
     position = positions[random.randrange(len(positions))]
     status = statuses[random.randrange(len(statuses))]
-    question = question(hand_list, position, status)
-    answer = answer(hand_class, position, status)
+    q = question(hand_list, position, status)
+    a = answer(hand_class, position, status)
     print ('hands: {}'.format(hand_list))
     print ('class_name: {}'.format(hand_class))
-    print ('q: {}'.format(question))
-    print ('answer: {}'.format(answer))
-    return hand_class, position, status, question, answer
+    print ('q: {}'.format(q))
+    print ('answer: {}'.format(a))
+    return hand_class, position, status, q, a
 
 if __name__ == '__main__':
     main()
