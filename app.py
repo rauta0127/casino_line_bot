@@ -1,5 +1,7 @@
 from flask import Flask, request, abort
+from flask_sqlalchemy import SQLAlchemy
 import os
+import sqlite3
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -39,9 +41,26 @@ if channel_access_token is None:
     print('Specify LINE_CHANNEL_ACCESS_TOKEN as environment variable.')
     sys.exit(1)
 
+casino_bot = ''
 
 line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
+
+DATABASE = 'casino_user.db'
+conn = sqlite3.connect(DATABASE)
+
+def put_data4(dict):
+    with conn:
+        conn.execute('INSERT INTO casino_user VALUES (null, :user_id, :status)', dict)
+    # conn.close()
+
+def read_data():
+    cur = conn.execute('SELECT * FROM users')
+    users = [user for user in cur.fetchall()]
+    for i in users:
+        print(i)
+    conn.close()
+
 
 @app.route("/")
 def index():
@@ -67,6 +86,8 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    read_data()
+    
     if event.message.text == '表くれ':
         line_bot_api.reply_message(
             event.reply_token,
