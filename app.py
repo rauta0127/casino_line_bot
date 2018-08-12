@@ -71,6 +71,12 @@ class Users(db.Model):
         self.updated_at = updated_at
         self.user_name = user_name
         self.latest_message = latest_message
+        self.game = game
+        self.poker_handclass = poker_handclass
+        self.poker_position = poker_position
+        self.poker_status = poker_status
+        self.poker_action = poker_action
+
 
 def createUser(event):
     profile = line_bot_api.get_profile(event.source.user_id)
@@ -92,8 +98,6 @@ def createUser(event):
             event.reply_token,
             TextSendMessage(text=text))
         sys.exit()
-
-
 
 
 @app.route("/")
@@ -122,10 +126,7 @@ def callback():
 def handle_message(event):
     profile = line_bot_api.get_profile(event.source.user_id)
     # Create User row
-    try:
-        createUser(event)
-    except:
-        pass
+    #createUser(event)
     #user = Users(profile.user_id, 'ready', datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'), profile.display_name, event.message.text)
     #db.session.add(user)
     #db.session.commit()
@@ -147,7 +148,6 @@ def handle_message(event):
 
         elif event.message.text == 'エントリー':
             hand_class, position, status, question, answer = poker_chart.main()
-            questioned_user = db.session.query(Users).filter(Users.user_id==profile.user_id).first()
             questioned_user.status='questioned' 
             questioned_user.updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
             questioned_user.latest_message=event.message.text
