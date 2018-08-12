@@ -53,7 +53,7 @@ def callback():
 
 
 @handler.add(MessageEvent, message=TextMessage)
-def make_image_message():
+def make_image_messages():
             messages = ImageSendMessage(
                 original_content_url="shorthand-chart.jpg", #JPEG 最大画像サイズ：240×240 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
                 preview_image_url="shorthand-chart.jpg" #JPEG 最大画像サイズ：1024×1024 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
