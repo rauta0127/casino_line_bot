@@ -45,9 +45,9 @@ def classing(hand_list):
 
 def question(hand_list, position, status):
     hand = '{}, {}'.format(''.join(hand_list[0]), ''.join(hand_list[1]))
-    q = 'Your hand: {hand}\n'\
-        'positon: {position}\n'\
-        'status: {status}'.format(hand=hand, position=position, status=status)
+    q = 'スターティングハンド: {hand}\n'\
+        'あなたの席位置: {position}\n'\
+        'あなたの状況: {status}'.format(hand=hand, position=position, status=status)
     return q
 
 def answer(hand_class, position, status):
