@@ -1,7 +1,7 @@
 from flask import Flask, request, abort
 from flask_sqlalchemy import SQLAlchemy
 import os
-import sqlite3
+import psycopg2
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -15,7 +15,6 @@ from linebot.models import (
 from linebot.exceptions import LineBotApiError
 
 import poker_chart
-import psycopg2
 
 app = Flask(__name__)
 
