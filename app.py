@@ -107,7 +107,8 @@ def handle_message(event):
     db.session.add(user)
     db.session.commit()
 
-    users = User.query.all()
+    users = Users.query.all()
+    print (users)
 
     if event.message.text == '表くれ':
         line_bot_api.reply_message(
