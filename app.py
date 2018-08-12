@@ -19,6 +19,19 @@ app = Flask(__name__)
 channel_secret = os.environ['LINE_CHANNEL_SECRET']
 channel_access_token = os.environ['LINE_CHANNEL_ACCESS_TOKEN']
 
+chart_jpg_url = 'https://lh3.googleusercontent.com/Q-uM4RpSIz6OdMQrOx4uyt7'\
+                'RtS63NSjZ7Oe_LF5F556WfGvlArAo6fzIVz8Mn_PyhxxD9jjaBLGbZHTmw'\
+                'SJD35fgzCZ-cHy9YoOR93MMQvJanvWl0RxS4e7aJqUdOenCqLYiERZW_b7j'\
+                'TVeaMdc2oOawOvA9--uZCi50Fbu5hL0_BzaZZbnS3M6seOFsjSrCBFt932X1'\
+                'SqKuqC9gBAcaD7g-yzOoTW_Meiy6lQoR1b3AqJ0UecZk7y0Q1p7O4Kcrq8iIL'\
+                'Y4H-aGXqvVEXBYsUeleBNdhYju_StQntKM_Yz-SFsdL3jzT51VunjOvwKNUTWQ'\
+                'Hbz6OyLNOKZ9ZeYY_yI0KEHS05SuDX6Kwa0rrhAdYjN9m9p_VetxbbgrZ2rNsvi'\
+                'GSXPVZzGz2UTdT5dvXk1h8Ih9lQJuuNkSINa294PMK5nQYS1FSv4LBghqt6QK1fM'\
+                'c79ODV5v3hPDvfBzxHVg7SJVEuCQqjyzHotOf5Aefw2Hdp0MGcoAd6PQntAn0Y76O'\
+                'RN-CQM0s3gG30Q-ML2kACGfKh3RmEyDEYo7eP8Sq8lKZdAzl77sfUXHa8F9xe7gvl1'\
+                'nZoZvsU-ehwysonxkkxHlb03kKQqfu_79jE8My1DK-vIVdiVz_5vP3ZSuU8c6mNVt4m'\
+                'NwUMrqhGDOz4qclCnMqIcmyg=w610-h863-no'
+
 if channel_secret is None:
     print('Specify LINE_CHANNEL_SECRET as environment variable.')
     sys.exit(1)
@@ -32,10 +45,12 @@ handler = WebhookHandler(channel_secret)
 
 def make_image_messages():
     messages = ImageSendMessage(
-        original_content_url="https://lh3.googleusercontent.com/Q-uM4RpSIz6OdMQrOx4uyt7RtS63NSjZ7Oe_LF5F556WfGvlArAo6fzIVz8Mn_PyhxxD9jjaBLGbZHTmwSJD35fgzCZ-cHy9YoOR93MMQvJanvWl0RxS4e7aJqUdOenCqLYiERZW_b7jTVeaMdc2oOawOvA9--uZCi50Fbu5hL0_BzaZZbnS3M6seOFsjSrCBFt932X1SqKuqC9gBAcaD7g-yzOoTW_Meiy6lQoR1b3AqJ0UecZk7y0Q1p7O4Kcrq8iILY4H-aGXqvVEXBYsUeleBNdhYju_StQntKM_Yz-SFsdL3jzT51VunjOvwKNUTWQHbz6OyLNOKZ9ZeYY_yI0KEHS05SuDX6Kwa0rrhAdYjN9m9p_VetxbbgrZ2rNsviGSXPVZzGz2UTdT5dvXk1h8Ih9lQJuuNkSINa294PMK5nQYS1FSv4LBghqt6QK1fMc79ODV5v3hPDvfBzxHVg7SJVEuCQqjyzHotOf5Aefw2Hdp0MGcoAd6PQntAn0Y76ORN-CQM0s3gG30Q-ML2kACGfKh3RmEyDEYo7eP8Sq8lKZdAzl77sfUXHa8F9xe7gvl1nZoZvsU-ehwysonxkkxHlb03kKQqfu_79jE8My1DK-vIVdiVz_5vP3ZSuU8c6mNVt4mNwUMrqhGDOz4qclCnMqIcmyg=w610-h863-no", #JPEG 最大画像サイズ：240×240 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
-        preview_image_url="https://lh3.googleusercontent.com/Q-uM4RpSIz6OdMQrOx4uyt7RtS63NSjZ7Oe_LF5F556WfGvlArAo6fzIVz8Mn_PyhxxD9jjaBLGbZHTmwSJD35fgzCZ-cHy9YoOR93MMQvJanvWl0RxS4e7aJqUdOenCqLYiERZW_b7jTVeaMdc2oOawOvA9--uZCi50Fbu5hL0_BzaZZbnS3M6seOFsjSrCBFt932X1SqKuqC9gBAcaD7g-yzOoTW_Meiy6lQoR1b3AqJ0UecZk7y0Q1p7O4Kcrq8iILY4H-aGXqvVEXBYsUeleBNdhYju_StQntKM_Yz-SFsdL3jzT51VunjOvwKNUTWQHbz6OyLNOKZ9ZeYY_yI0KEHS05SuDX6Kwa0rrhAdYjN9m9p_VetxbbgrZ2rNsviGSXPVZzGz2UTdT5dvXk1h8Ih9lQJuuNkSINa294PMK5nQYS1FSv4LBghqt6QK1fMc79ODV5v3hPDvfBzxHVg7SJVEuCQqjyzHotOf5Aefw2Hdp0MGcoAd6PQntAn0Y76ORN-CQM0s3gG30Q-ML2kACGfKh3RmEyDEYo7eP8Sq8lKZdAzl77sfUXHa8F9xe7gvl1nZoZvsU-ehwysonxkkxHlb03kKQqfu_79jE8My1DK-vIVdiVz_5vP3ZSuU8c6mNVt4mNwUMrqhGDOz4qclCnMqIcmyg=w610-h863-no" #JPEG 最大画像サイズ：1024×1024 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
+        original_content_url=chart_jpg_url, 
+        preview_image_url=chart_jpg_url
     )
     return messages
+
+def 
 
 @app.route("/")
 def index():
@@ -62,7 +77,6 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     if event.message.text == '表くれ':
-        
         messages = make_image_messages()
         line_bot_api.reply_message(
             event.reply_token,
@@ -70,9 +84,7 @@ def handle_message(event):
 
     else:
         q = poker_chart.main() #type(q)==tuple
-
         profile = line_bot_api.get_profile(event.source.user_id)
-
         print(profile.display_name)
         print(profile.user_id)
         print(profile.picture_url)
