@@ -58,7 +58,7 @@ class Users(db.Model):
     updated_at = db.Column(db.DateTime())
 
     def __init__(self, user_id, status, updated_at):
-        self.user_id = username
+        self.user_id = user_id
         self.status = status
         self.updated_at = updated_at
 
