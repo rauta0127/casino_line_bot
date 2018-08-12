@@ -131,6 +131,8 @@ def handle_message(event):
     #db.session.add(user)
     #db.session.commit()
 
+    print (db.session.query(Users).filter(Users.user_id==profile.user_id).first())
+    print (type(db.session.query(Users).filter(Users.user_id==profile.user_id).first()))
     user_status = db.session.query(Users).filter(Users.user_id==profile.user_id).first().status
 
     if user_status == 'ready':
