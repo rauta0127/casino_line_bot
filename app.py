@@ -53,15 +53,16 @@ def callback():
 
 
 @handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
-    if event.message.text == '表くれ':
-        def make_image_message():
+def make_image_message():
             messages = ImageSendMessage(
                 original_content_url="shorthand-chart.jpg", #JPEG 最大画像サイズ：240×240 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
                 preview_image_url="shorthand-chart.jpg" #JPEG 最大画像サイズ：1024×1024 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
             )
             return messages
 
+def handle_message(event):
+    if event.message.text == '表くれ':
+        
         messages = make_image_messages()
         line_bot_api.reply_message(
             event.reply_token,
