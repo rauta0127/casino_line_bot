@@ -178,6 +178,7 @@ def handle_message(event):
             text = '今はダメです！'
             questioned_user.updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
             questioned_user.latest_message=event.message.text
+            db.session.commit()
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=text))
@@ -188,6 +189,7 @@ def handle_message(event):
                 questioned_user.status='ready'
                 questioned_user.updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
                 questioned_user.latest_message=event.message.text
+                db.session.commit()
                 line_bot_api.reply_message(
                     event.reply_token,
                     TextSendMessage(text=text))
@@ -195,6 +197,7 @@ def handle_message(event):
                 text = '違います！'
                 questioned_user.updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
                 questioned_user.latest_message=event.message.text
+                db.session.commit()
                 line_bot_api.reply_message(
                     event.reply_token,
                     TextSendMessage(text=text))
@@ -202,6 +205,7 @@ def handle_message(event):
             text = 'R, RF, C, C2, Fで答えてください！'
             questioned_user.updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
             questioned_user.latest_message=event.message.text
+            db.session.commit()
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=text))
