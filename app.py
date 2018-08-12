@@ -2,6 +2,7 @@ from flask import Flask, request, abort
 from flask_sqlalchemy import SQLAlchemy
 import os
 import psycopg2
+import time
 import datetime
 
 from linebot import (
@@ -103,7 +104,7 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    user = Users('python', 'ready', datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'))
+    user = Users('python', 'ready', datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
     db.session.add(user)
     db.session.commit()
 
