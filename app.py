@@ -146,6 +146,7 @@ def handle_message(event):
     user_status = db.session.query(Users).filter(Users.user_id==profile.user_id).first().status
 
     if user_status == 'ready':
+        questioned_user = db.session.query(Users).filter(Users.user_id==profile.user_id).first()
         if event.message.text == '表くれ':
             questioned_user.updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
             questioned_user.latest_message=event.message.text
