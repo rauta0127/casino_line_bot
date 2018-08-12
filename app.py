@@ -2,6 +2,7 @@ from flask import Flask, request, abort
 from flask_sqlalchemy import SQLAlchemy
 import os
 import psycopg2
+import time
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -50,17 +51,19 @@ line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
 
-class User(db.Model):
+class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True)
-    email = db.Column(db.String(120), unique=True)
+    user_id = db.Column(db.String(50), unique=True)
+    status = db.Column(db.String(10), unique=True)
+    updated_at = db.Column(db.DateTime())
 
-    def __init__(self, username, email):
-        self.username = username
-        self.email = email
+    def __init__(self, user_id, status, updated_at):
+        self.user_id = username
+        self.status = status
+        self.updated_at = updated_at
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<User %r>' % self.user_id
 
 
 def put_data4(dict):
@@ -100,7 +103,7 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    user = User('shinzo', 'shinzo.abe@example.com')
+    user = Users('python', 'ready', time.time())
     db.session.add(user)
     db.session.commit()
 
