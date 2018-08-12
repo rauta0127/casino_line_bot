@@ -45,10 +45,10 @@ def classing(hand_list):
 
 def question(hand_list, position, status):
     hand = '{}, {}'.format(''.join(hand_list[0]), ''.join(hand_list[1]))
-    question = 'Your hand: {hand}\n'\
+    q = 'Your hand: {hand}\n'\
         'positon: {position}\n'\
         'status: {status}'.format(hand=hand, position=position, status=status)
-    return question
+    return q
 
 def answer(hand_class, position, status):
     action_df = pd.read_csv('shorthand_chart.csv')
