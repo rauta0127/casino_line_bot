@@ -10,6 +10,7 @@ from linebot.exceptions import (
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
+from linebot.exceptions import LineBotApiError
 
 import poker_chart
 
@@ -54,6 +55,11 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     q = poker_chart.main() #tyoe(q)==tuple
+    profile = line_bot_api.get_profile('<user_id>')
+    print(profile.display_name)
+    print(profile.user_id)
+    print(profile.picture_url)
+    print(profile.status_message)
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=q[0]))
