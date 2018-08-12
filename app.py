@@ -119,17 +119,22 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     profile = line_bot_api.get_profile(event.source.user_id)
-    # Create User row
-    #createUser(event)
-    #user = Users(profile.user_id, 'ready', datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'), profile.display_name, event.message.text)
-    #db.session.add(user)
-    #db.session.commit()
-
 
     if db.session.query(Users).filter(Users.user_id==profile.user_id).first() is None:
         createUser(event)
     else:
         user_status = db.session.query(Users).filter(Users.user_id==profile.user_id).first().status
+        
+        if event.message.text == 'コマンド':
+            text = '==コマンド一覧==\n'\
+                    '表くれ: チャートを返します\n'\
+                    'エントリー: エントリーします\n'\
+                    'R, RF, C, C2, F: 解答方法'
+            line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(text=text))
+
+
         if user_status == 'ready':
             questioned_user = db.session.query(Users).filter(Users.user_id==profile.user_id).first()
             if event.message.text == '表くれ':
