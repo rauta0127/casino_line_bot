@@ -160,7 +160,7 @@ def handle_message(event):
         questioned_user.poker_status=status,
         questioned_user.poker_action=answer
         db.session.commit()
-        text = '{user_name}さん\n{question}'.format(user_name=profile.display_name, question=question[0])
+        text = '{user_name}さん\n{question}'.format(user_name=profile.display_name, question=question)
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=text))
