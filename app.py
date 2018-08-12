@@ -63,8 +63,6 @@ class Users(db.Model):
         self.status = status
         self.updated_at = updated_at
 
-    def __repr__(self):
-        return '<User %r>' % self.user_id
 
 
 def put_data4(dict):
