@@ -102,22 +102,37 @@ def handle_message(event):
     # Create User row
     profile = line_bot_api.get_profile(event.source.user_id)
     user_id = db.session.query(Users.user_id).all()
-    if not (event.source.user_id in list(user_id[0])):
+    if len(user_id) == 0:
         user = Users(
-                user_id=profile.user_id,
-                status='ready', 
-                updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'),
-                user_name=profile.display_name, 
-                latest_message=event.message.text,
+                    user_id=profile.user_id,
+                    status='ready', 
+                    updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'),
+                    user_name=profile.display_name, 
+                    latest_message=event.message.text,
                 )
         db.session.add(user)
         db.session.commit()
-
         text = '{}, はじめまして！'.format(event.source.user_id)
-
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=text))
+    else:
+        if not (event.source.user_id in list(user_id[0])):
+            user = Users(
+                    user_id=profile.user_id,
+                    status='ready', 
+                    updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'),
+                    user_name=profile.display_name, 
+                    latest_message=event.message.text,
+                    )
+            db.session.add(user)
+            db.session.commit()
+
+            text = '{}, はじめまして！'.format(event.source.user_id)
+
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=text))
 
     #user = Users(profile.user_id, 'ready', datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'), profile.display_name, event.message.text)
     #db.session.add(user)
