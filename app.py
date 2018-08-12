@@ -102,7 +102,7 @@ def handle_message(event):
     # Create User row
     profile = line_bot_api.get_profile(event.source.user_id)
     user_id = db.session.query(Users.user_id).all()
-    if not event.source.user_id in list(user_id[0]):
+    if not (event.source.user_id in list(user_id[0])):
         user = Users(
                 user_id=profile.user_id,
                 status='ready', 
