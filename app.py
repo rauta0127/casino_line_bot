@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 import time
 import datetime
+import sys
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -88,6 +89,7 @@ def createUser(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=text))
+        sys.exit(1)
     else:
         if not (event.source.user_id in list(user_id[0])):
             new_user = Users(
@@ -105,6 +107,8 @@ def createUser(event):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=text))
+            sys.exit(1)
+
 
 
 
