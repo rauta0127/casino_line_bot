@@ -17,6 +17,10 @@ from linebot.exceptions import LineBotApiError
 import poker_chart
 
 app = Flask(__name__)
+db_uri = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 channel_secret = os.environ['LINE_CHANNEL_SECRET']
 channel_access_token = os.environ['LINE_CHANNEL_ACCESS_TOKEN']
@@ -45,9 +49,19 @@ if channel_access_token is None:
 line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
-db_uri = os.environ.get('DATABASE_URL')
-connector = psycopg2.connect(host=db_uri,database="dcudrb9s4j844e")
-cursor = connector.cursor()
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True)
+    email = db.Column(db.String(120), unique=True)
+
+    def __init__(self, username, email):
+        self.username = username
+        self.email = email
+
+    def __repr__(self):
+        return '<User %r>' % self.username
+
 
 def put_data4(dict):
     with conn:
@@ -86,7 +100,9 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    read_data()
+    user = User('shinzo', 'shinzo.abe@example.com')
+    db.session.add(user)
+    db.session.commit()
 
     if event.message.text == '表くれ':
         line_bot_api.reply_message(
