@@ -75,39 +75,23 @@ class Users(db.Model):
 def createUser(event):
     profile = line_bot_api.get_profile(event.source.user_id)
     user_id = db.session.query(Users.user_id).all()
-    if len(user_id) == 0:
+    if not (event.source.user_id in list(user_id[0])):
         new_user = Users(
-                    user_id=profile.user_id,
-                    status='ready', 
-                    updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'),
-                    user_name=profile.display_name, 
-                    latest_message=event.message.text,
+                user_id=profile.user_id,
+                status='ready', 
+                updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'),
+                user_name=profile.display_name, 
+                latest_message=event.message.text,
                 )
         db.session.add(new_user)
         db.session.commit()
+
         text = '{}さん, はじめまして！ルール説明は私の投稿ページを見てください！'.format(profile.display_name)
+
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=text))
-        sys.exit(1)
-    else:
-        if not (event.source.user_id in list(user_id[0])):
-            new_user = Users(
-                    user_id=profile.user_id,
-                    status='ready', 
-                    updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'),
-                    user_name=profile.display_name, 
-                    latest_message=event.message.text,
-                    )
-            db.session.add(new_user)
-            db.session.commit()
-
-            text = '{}さん, はじめまして！ルール説明は私の投稿ページを見てください！'.format(profile.display_name)
-
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=text))
-            sys.exit(1)
+        sys.exit()
 
 
 
@@ -138,7 +122,10 @@ def callback():
 def handle_message(event):
     profile = line_bot_api.get_profile(event.source.user_id)
     # Create User row
-    # createUser(event)
+    try:
+        createUser(event)
+    except:
+        pass
     #user = Users(profile.user_id, 'ready', datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'), profile.display_name, event.message.text)
     #db.session.add(user)
     #db.session.commit()
