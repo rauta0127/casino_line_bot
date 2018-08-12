@@ -53,10 +53,10 @@ handler = WebhookHandler(channel_secret)
 
 
 class Users(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.String(50), unique=True)
-    status = db.Column(db.String(10), unique=True)
-    updated_at = db.Column(db.DateTime())
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.String(50), unique=True, nullable=True)
+    status = db.Column(db.String(10), unique=True, nullable=True)
+    updated_at = db.Column(db.DateTime(), nullable=True)
 
     def __init__(self, user_id, status, updated_at):
         self.user_id = user_id
