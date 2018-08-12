@@ -131,12 +131,16 @@ def handle_message(event):
                 preview_image_url=chart_jpg_url
             ))
 
+    '''
+
     else:
         q = poker_chart.main() #type(q)==tuple
         text = '{user_name}\n{question}'.format(user_name=profile.display_name, question=q[0])
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=text))
+
+    '''
 
 
 if __name__ == "__main__":
