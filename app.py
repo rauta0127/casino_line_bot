@@ -53,10 +53,7 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    q = poker_chart.main()
-    print ("--------------")
-    print (type(q))
-
+    q = poker_chart.main() #tyoe(q)==tuple
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=q[0]))
