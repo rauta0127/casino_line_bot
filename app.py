@@ -71,11 +71,6 @@ class Users(db.Model):
         self.updated_at = updated_at
         self.user_name = user_name
         self.latest_message = latest_message
-        self.game = game
-        self.poker_handclass = poker_handclass
-        self.poker_position = poker_position
-        self.poker_status = poker_status
-        self.poker_action = poker_action
 
 
 def createUser(event):
