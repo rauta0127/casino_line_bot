@@ -78,7 +78,7 @@ def createUser(event):
     if len(user_id) == 0:
         new_user = Users(
                     user_id=profile.user_id,
-                    status='created', 
+                    status='ready', 
                     updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'),
                     user_name=profile.display_name, 
                     latest_message=event.message.text,
@@ -93,7 +93,7 @@ def createUser(event):
         if not (event.source.user_id in list(user_id[0])):
             new_user = Users(
                     user_id=profile.user_id,
-                    status='created', 
+                    status='ready', 
                     updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'),
                     user_name=profile.display_name, 
                     latest_message=event.message.text,
@@ -140,37 +140,68 @@ def handle_message(event):
     #db.session.add(user)
     #db.session.commit()
 
-    if event.message.text == '表くれ':
-        line_bot_api.reply_message(
-            event.reply_token,
-            ImageSendMessage(
-                original_content_url=chart_jpg_url, 
-                preview_image_url=chart_jpg_url
-            ))
+    user_status = db.session.query(Users).filter(Users.user_id==profile.user_id).first().status
 
-    elif event.message.text == 'ポーカー':
-        hand_class, position, status, question, answer = poker_chart.main()
-        questioned_user = db.session.query(Users).filter(Users.user_id==profile.user_id).first()
-        questioned_user.status='dealed', 
-        questioned_user.updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'),
-        questioned_user.latest_message=event.message.text,
-        questioned_user.game='poker',
-        questioned_user.poker_handclass=hand_class,
-        questioned_user.poker_position=position,
-        questioned_user.poker_status=status,
-        questioned_user.poker_action=answer
-        db.session.commit()
-        text = '{user_name}さん\n{question}'.format(user_name=profile.display_name, question=question)
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=text))
+    if user_status == 'ready':
+        if event.message.text == '表くれ':
+            line_bot_api.reply_message(
+                event.reply_token,
+                ImageSendMessage(
+                    original_content_url=chart_jpg_url, 
+                    preview_image_url=chart_jpg_url
+                ))
 
-    else:
-        q = poker_chart.main() #type(q)==tuple
-        text = '{user_name}\n{question}'.format(user_name=profile.display_name, question=q[0])
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=text))
+        elif event.message.text == 'エントリー':
+            hand_class, position, status, question, answer = poker_chart.main()
+            questioned_user = db.session.query(Users).filter(Users.user_id==profile.user_id).first()
+            questioned_user.status='questioned', 
+            questioned_user.updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'),
+            questioned_user.latest_message=event.message.text,
+            questioned_user.game='poker',
+            questioned_user.poker_handclass=hand_class,
+            questioned_user.poker_position=position,
+            questioned_user.poker_status=status,
+            questioned_user.poker_action=answer
+            db.session.commit()
+            text = '{user_name}さん\n{question}'.format(user_name=profile.display_name, question=question)
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=text))
+        else:
+            text = 'エントリーしますか？'
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=text))
+
+    if user_status == 'questioned':
+        if event.message.text == '表くれ':
+            text = '今はダメです！'
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=text))
+        elif event.message.text in ['R', 'RF', 'C', 'C2', 'F']:
+            questioned_user = db.session.query(Users).filter(Users.user_id==profile.user_id).first()
+            correct_answer = questioned_user.poker_action
+            if correct_answer == event.message.text:
+                text = '正解です！'
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(text=text))
+                questioned_user.status='ready', 
+                questioned_user.updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'),
+                questioned_user.latest_message=event.message.text
+            else:
+                text = '違います！'
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(text=text))
+                questioned_user.updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'),
+                questioned_user.latest_message=event.message.text
+        else:
+            text = 'R, RF, C, C2, Fで答えてください！'
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=text))
 
 
 if __name__ == "__main__":
