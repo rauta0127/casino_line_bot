@@ -1,7 +1,6 @@
 from flask import Flask, request, abort
 from flask_sqlalchemy import SQLAlchemy
 import os
-import psycopg2
 import time
 import datetime
 
