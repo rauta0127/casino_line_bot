@@ -43,15 +43,6 @@ if channel_access_token is None:
 line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
-def make_image_messages():
-    messages = ImageSendMessage(
-        original_content_url=chart_jpg_url, 
-        preview_image_url=chart_jpg_url
-    )
-    return messages
-
-def 
-
 @app.route("/")
 def index():
     return "This is LINE casino-bot app. Running!"
@@ -77,10 +68,12 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     if event.message.text == '表くれ':
-        messages = make_image_messages()
         line_bot_api.reply_message(
             event.reply_token,
-            messages)
+            ImageSendMessage(
+                original_content_url=chart_jpg_url, 
+                preview_image_url=chart_jpg_url
+            ))
 
     else:
         q = poker_chart.main() #type(q)==tuple
