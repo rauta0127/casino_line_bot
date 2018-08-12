@@ -84,7 +84,7 @@ def createUser(event):
                 )
         db.session.add(new_user)
         db.session.commit()
-        text = '{}さん, はじめまして！'.format(profile.display_name)
+        text = '{}さん, はじめまして！ルール説明は私の投稿ページを見てください！'.format(profile.display_name)
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=text))
@@ -100,7 +100,7 @@ def createUser(event):
             db.session.add(new_user)
             db.session.commit()
 
-            text = '{}さん, はじめまして！'.format(profile.display_name)
+            text = '{}さん, はじめまして！ルール説明は私の投稿ページを見てください！'.format(profile.display_name)
 
             line_bot_api.reply_message(
                 event.reply_token,
@@ -143,6 +143,9 @@ def handle_message(event):
 
     if user_status == 'ready':
         if event.message.text == '表くれ':
+            questioned_user.updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+            questioned_user.latest_message=event.message.text
+            db.session.commit()
             line_bot_api.reply_message(
                 event.reply_token,
                 ImageSendMessage(
@@ -168,6 +171,9 @@ def handle_message(event):
                 TextSendMessage(text=text))
         else:
             text = 'エントリーしますか？'
+            questioned_user.updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+            questioned_user.latest_message=event.message.text
+            db.session.commit()
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=text))
