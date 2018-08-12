@@ -15,6 +15,7 @@ from linebot.models import (
 from linebot.exceptions import LineBotApiError
 
 import poker_chart
+import psycopg2
 
 app = Flask(__name__)
 
@@ -41,13 +42,13 @@ if channel_access_token is None:
     print('Specify LINE_CHANNEL_ACCESS_TOKEN as environment variable.')
     sys.exit(1)
 
-casino_bot = ''
 
 line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
-DATABASE = 'casino_user.db'
-conn = sqlite3.connect(DATABASE)
+db_uri = os.environ.get('DATABASE_URL')
+connector = psycopg2.connect(host=db_uri,database="dcudrb9s4j844e")
+cursor = connector.cursor()
 
 def put_data4(dict):
     with conn:
@@ -55,11 +56,11 @@ def put_data4(dict):
     # conn.close()
 
 def read_data():
-    cur = conn.execute('SELECT * FROM users')
+    cur = cursor.execute('SELECT * FROM users')
     users = [user for user in cur.fetchall()]
     for i in users:
         print(i)
-    conn.close()
+    cursor.close()
 
 
 @app.route("/")
@@ -87,7 +88,7 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     read_data()
-    
+
     if event.message.text == '表くれ':
         line_bot_api.reply_message(
             event.reply_token,
