@@ -55,27 +55,17 @@ handler = WebhookHandler(channel_secret)
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.String(50), unique=True, nullable=True)
-    status = db.Column(db.String(10), unique=True, nullable=True)
+    status = db.Column(db.String(10), nullable=True)
     updated_at = db.Column(db.DateTime(), nullable=True)
+    user_name = db.Column(db.String(30), nullable=True)
+    latest_message = db.Column(db.String(100), nullable=True)
 
-    def __init__(self, user_id, status, updated_at):
+    def __init__(self, user_id, status, updated_at, user_name, latest_message):
         self.user_id = user_id
         self.status = status
         self.updated_at = updated_at
-
-
-
-def put_data4(dict):
-    with conn:
-        conn.execute('INSERT INTO casino_user VALUES (null, :user_id, :status)', dict)
-    # conn.close()
-
-def read_data():
-    cur = cursor.execute('SELECT * FROM users')
-    users = [user for user in cur.fetchall()]
-    for i in users:
-        print(i)
-    cursor.close()
+        self.user_name = user_name
+        self.latest_message = latest_message
 
 
 @app.route("/")
@@ -102,15 +92,15 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    
     profile = line_bot_api.get_profile(event.source.user_id)
-    print(profile.display_name)
-    print(profile.user_id)
-    user = Users(profile.user_id, 'ready', datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
-    db.session.add(user)
-    db.session.commit()
+    user_id = session.query(Users.user_id).all()
+    if event.source.user_id in user_id:
+        print ('Existed UserID!!!')
 
-    users = Users.query.all()
-    print (users)
+    #user = Users(profile.user_id, 'ready', datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'), profile.display_name, event.message.text)
+    #db.session.add(user)
+    #db.session.commit()
 
     if event.message.text == '表くれ':
         line_bot_api.reply_message(
