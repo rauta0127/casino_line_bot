@@ -59,6 +59,11 @@ class Users(db.Model):
     updated_at = db.Column(db.DateTime(), nullable=True)
     user_name = db.Column(db.String(30), nullable=True)
     latest_message = db.Column(db.String(100), nullable=True)
+    game = db.Column(db.String(10))
+    poker_handclass = db.Column(db.String(5))
+    poker_position = db.Column(db.String(10))
+    poker_status = db.Column(db.String(20))
+    poker_action = db.Column(db.String(2))
 
     def __init__(self, user_id, status, updated_at, user_name, latest_message):
         self.user_id = user_id
@@ -93,11 +98,26 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     
+
+    # Create User row
     profile = line_bot_api.get_profile(event.source.user_id)
     user_id = db.session.query(Users.user_id).all()
-    print ('{}: {}'.format(event.source.user_id, user_id))
-    if event.source.user_id in list(user_id[0]):
-        print ('Existed UserID!!!')
+    if not event.source.user_id in list(user_id[0]):
+        user = Users(
+                user_id=profile.user_id,
+                status='ready', 
+                updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'),
+                user_name=profile.display_name, 
+                latest_message=event.message.text,
+                )
+        db.session.add(user)
+        db.session.commit()
+
+        text = '{}, はじめまして！'.format(event.source.user_id)
+
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=text))
 
     #user = Users(profile.user_id, 'ready', datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'), profile.display_name, event.message.text)
     #db.session.add(user)
