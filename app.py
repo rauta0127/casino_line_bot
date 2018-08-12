@@ -94,7 +94,7 @@ def callback():
 def handle_message(event):
     
     profile = line_bot_api.get_profile(event.source.user_id)
-    user_id = session.query(Users.user_id).all()
+    user_id = db.session.query(Users.user_id).all()
     if event.source.user_id in user_id:
         print ('Existed UserID!!!')
 
