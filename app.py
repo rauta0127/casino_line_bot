@@ -96,7 +96,7 @@ def handle_message(event):
     profile = line_bot_api.get_profile(event.source.user_id)
     user_id = db.session.query(Users.user_id).all()
     print ('{}: {}'.format(event.source.user_id, user_id))
-    if event.source.user_id in user_id:
+    if event.source.user_id in list(user_id[0]):
         print ('Existed UserID!!!')
 
     #user = Users(profile.user_id, 'ready', datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'), profile.display_name, event.message.text)
