@@ -54,16 +54,18 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    q = poker_chart.main() #tyoe(q)==tuple
-    
+    q = poker_chart.main() #type(q)==tuple
+
     profile = line_bot_api.get_profile(event.source.user_id)
+
     print(profile.display_name)
     print(profile.user_id)
     print(profile.picture_url)
     print(profile.status_message)
+    text = '{user_name}\n{question}'.format(user_name=profile.display_name, question=q[0])
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=q[0]))
+        TextSendMessage(text=text))
 
 
 if __name__ == "__main__":
