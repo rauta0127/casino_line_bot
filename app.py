@@ -76,14 +76,14 @@ def createUser(event):
     profile = line_bot_api.get_profile(event.source.user_id)
     user_id = db.session.query(Users.user_id).all()
     if len(user_id) == 0:
-        user = Users(
+        new_user = Users(
                     user_id=profile.user_id,
                     status='created', 
                     updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'),
                     user_name=profile.display_name, 
                     latest_message=event.message.text,
                 )
-        db.session.add(user)
+        db.session.add(new_user)
         db.session.commit()
         text = '{}さん, はじめまして！'.format(profile.display_name)
         line_bot_api.reply_message(
@@ -91,14 +91,14 @@ def createUser(event):
             TextSendMessage(text=text))
     else:
         if not (event.source.user_id in list(user_id[0])):
-            user = Users(
+            new_user = Users(
                     user_id=profile.user_id,
                     status='created', 
                     updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'),
                     user_name=profile.display_name, 
                     latest_message=event.message.text,
                     )
-            db.session.add(user)
+            db.session.add(new_user)
             db.session.commit()
 
             text = '{}さん, はじめまして！'.format(profile.display_name)
@@ -133,11 +133,8 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    
-
     # Create User row
     createUser(event)
-
     #user = Users(profile.user_id, 'ready', datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'), profile.display_name, event.message.text)
     #db.session.add(user)
     #db.session.commit()
@@ -150,7 +147,22 @@ def handle_message(event):
                 preview_image_url=chart_jpg_url
             ))
 
-    '''
+    elif event.message.text == 'ポーカー':
+        hand_class, position, status, question, answer = poker_chart.main()
+        questioned_user = db.session.query(Users).filter(Users.user_id==profile.user_id).first()
+        questioned_user.status='dealed', 
+        questioned_user.updated_at=datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'),
+        questioned_user.latest_message=event.message.text,
+        questioned_user.game='poker',
+        questioned_user.poker_handclass=hand_class,
+        questioned_user.poker_position=position,
+        questioned_user.poker_status=status,
+        questioned_user.poker_action=answer
+        db.session.commit()
+        text = '{user_name}\n{question}'.format(user_name=profile.display_name, question=question[0])
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=text))
 
     else:
         q = poker_chart.main() #type(q)==tuple
@@ -158,8 +170,6 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=text))
-
-    '''
 
 
 if __name__ == "__main__":

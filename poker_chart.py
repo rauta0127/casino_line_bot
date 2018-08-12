@@ -48,7 +48,7 @@ def question(hand_list, position, status):
     q = 'Your hand: {hand}\n'\
         'positon: {position}\n'\
         'status: {status}'.format(hand=hand, position=position, status=status)
-    return q, 
+    return q
 
 def answer(hand_class, position, status):
     action_df = pd.read_csv('shorthand_chart.csv')
@@ -65,13 +65,13 @@ def main():
     hand_class = classing(hand_list)
     position = positions[random.randrange(len(positions))]
     status = statuses[random.randrange(len(statuses))]
-    q = question(hand_list, position, status)
-    a = answer(hand_class, position, status)
+    question = question(hand_list, position, status)
+    answer = answer(hand_class, position, status)
     print ('hands: {}'.format(hand_list))
     print ('class_name: {}'.format(hand_class))
-    print ('q: {}'.format(q))
-    print ('a: {}'.format(a))
-    return q
+    print ('q: {}'.format(question))
+    print ('answer: {}'.format(answer))
+    return hand_class, position, status, question, answer
 
 if __name__ == '__main__':
     main()
