@@ -18,7 +18,6 @@ statuses = ['OPENING_PLAYER', '1-2_LIMPERS', 'FACING_A_RAISE', 'FACING_A_3BET']
 actions = ['R', 'RF', 'C', 'C2', 'F']
 call2_desc = 'Call if a call has been made in front of you. Do not call if not.'
 
-
 def dealing(hand_num):
     hands = deck[:2]
     return hands
@@ -60,7 +59,9 @@ def answer(hand_class, position, status):
     return answer
 
 #-------------------------- Main --------------------------
+# 参加人数によるレイズ手発生確率
 def main():
+
     random.shuffle(deck)
     hand_list = dealing(2)
     hand_class = classing(hand_list)
